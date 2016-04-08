@@ -19,6 +19,7 @@ dcards = ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10", "S11", "S
           "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "C11", "C12", "C13",
           "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "D11", "D12", "D13",
           "H1", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H10", "H11", "H12", "H13",]
+cstr = [str(i) for i in range(1, 53)]
 
 # Make a dictionary of cards. We associate each card in the standard deck with
 # an integer in [0, 51] according to the following mapping:
@@ -153,10 +154,12 @@ class Player:
 		if is_card.strip() == "YES":
 			dnum = raw_input("Declared Number>> ")
 			actual = raw_input("Actual>> ")
-			while int(dnum) not in range(53) and int(dnum) != len(self.translate(actual)) and not self.isSubset(self.translate(actual)):
+			translated = actual.strip().split()
+			while dnum not in cstr or int(dnum) != len(translated) or not self.isSubset(translated):
 				print "Enter a proper subset of your cards."
 				dnum = raw_input("Declared Number>> ")
 				actual = raw_input("Actual>> ")
+				translated = actual.strip().split()
 			# Remove the cards we're playing.
 			self.removeCards(self.pid, self.translate(actual))
 			# Input should be 1-indexed rank.
@@ -184,13 +187,13 @@ class Player:
 				drank = raw_input("Declared Rank>> ")
 				dnum = raw_input("Declared Number>> ")
 				actual = raw_input("Actual>> ")
-				translated = self.translate(actual)
-				while drank not in ranks and int(dnum) not in range(53) and int(dnum) != len(translated) and not self.isSubset(translated):
+				translated = actual.strip().split()
+				while drank not in ranks or dnum not in cstr or int(dnum) != len(translated) or not self.isSubset(translated):
 					print "Enter a proper rank and a subset of your cards."
 					drank = raw_input("Declared Rank>> ")
 					dnum = raw_input("Declared Number")
 					actual = raw_input("Actual>> ")
-					translated = self.translate(actual)
+					translated = actual.strip().split()
 				# Remove the cards we've played.
 				self.removeCards(self.pid, self.translate(actual))
 				# Input should be 1-indexed rank.
@@ -210,13 +213,17 @@ class Player:
 		return ranks.index(rank)
 
 	# Checks to see whether the actual move is a playable move, i.e. a subset
-	# of the player's current cards.
+	# of the player's current cards. Looks at cards from the command line.
 	def isSubset(self, cardlist):
 		# Copy our list so we don't have to deal with aliasing issues.
 		cards = [i for i in self.getCards()]
 		for card in cardlist:
-			if card in cards:
-				cards.remove(card)
+			if card in self.carddict.keys():
+				card = self.carddict[card]
+				if card in cards:
+					cards.remove(card)
+				else:
+					return False
 			else:
 				return False
 		return True
