@@ -57,6 +57,12 @@ Thus, matchHistory will contain all public information.
 """
 matchHistory = []
 
+"""
+PLAYER CLASS-----------------------------------------------------------------//
+The base player class, from which all derived classes supply a chooseMove()
+function.
+"""
+
 class Player:
     """
     Base class for all players. All players by default represent their hand as a set
@@ -95,7 +101,11 @@ class Player:
         """
         return self.hand
         
-
+"""
+DERIVED CLASSES--------------------------------------------------------------//
+These classes inherit from the Player class and supply a chooseMove() function
+and possibly other helper functions as well.
+"""
 
 class RandomAI1Player(Player):
     """
@@ -221,6 +231,9 @@ class HumanPlayer(Player):
                 print "Idiot. You gave me an invalid input. Try again."
                 return self.chooseMove()
 
+"""
+HELPER FUNCTIONS for running the game----------------------------------------//
+"""
 
 def isValid(move):
     """
@@ -293,6 +306,10 @@ def isStackEmpty():
     """
     return len(topOfStack) == 0
     
+"""
+playGame()-------------------------------------------------------------------//
+Actually simulates the game.
+"""
       
 def playGame(players):
     """
